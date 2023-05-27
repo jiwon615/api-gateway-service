@@ -30,3 +30,8 @@ spring:
                 baseMessage: Welcome to Jiwon's Jimart. This is test base message.
                 preLogger: true
                 postLogger: true
+
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/**
