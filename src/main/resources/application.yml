@@ -13,6 +13,12 @@ spring:
 
   cloud:
     gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
         - id: first-service
           uri: http://localhost:8081/ # 어디로 forwarding 될 건지  (즉, first-service/** 요청시 http://localhost:8081/first-service/** 형테로 넘어간다는 것)
