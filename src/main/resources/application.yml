@@ -1,4 +1,5 @@
-port: 8000
+server:
+  port: 8000
 
 eureka:
   client:
@@ -10,7 +11,6 @@ eureka:
 spring:
   application:
     name: apigateway-service
-
   cloud:
     gateway:
       default-filters:
@@ -20,17 +20,13 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-        - id: first-service
-          uri: http://localhost:8081/ # 어디로 forwarding 될 건지  (즉, first-service/** 요청시 http://localhost:8081/first-service/** 형테로 넘어간다는 것)
+        - id: user-service
+          uri: lb://USER-SERVICE # forwarded uri (유레카 서버에 등록된 앱 이름)
           predicates:
-            - Path=/first-service/** # 사용자가 요청한 주소
+            - Path=/user-service/** # 사용자가 요청한 주소
           filters:
-            - AddRequestHeader=first-request, first-request-header2
-            - AddResponseHeader=first-response, first-response-header2
-        - id: second-service
-          uri: http://localhost:8082/
-          predicates:
-            - Path=/second-service/**
-          filters:
-            - AddRequestHeader=second-request, second-request-header2
-            - AddResponseHeader=second-response, second-response-header2
+            - name: LogFilter
+              args:
+                baseMessage: Welcome to Jiwon's Jimart. This is test base message.
+                preLogger: true
+                postLogger: true

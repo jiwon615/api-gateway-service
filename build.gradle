@@ -27,6 +27,7 @@ dependencies {
 	// spring cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.90.Final:osx-aarch_64'  // MacOS에서 DnsServer주소 관련 에러 해결
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
