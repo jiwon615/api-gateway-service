@@ -32,18 +32,17 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-
             ServerHttpRequest request = exchange.getRequest();
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
+                return onError(exchange);
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer", "");
 
             if (!isJwtValid(jwt)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
+                return onError(exchange);
             }
 
             return chain.filter(exchange);
@@ -72,9 +71,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return returnValue;
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus httpStatus) {
+    private Mono<Void> onError(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
 
         log.error("No Authorization Header!!");
         return response.setComplete();
