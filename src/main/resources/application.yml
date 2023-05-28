@@ -22,15 +22,22 @@ spring:
       routes:
         # 사용자 모듈
         - id: user-service
-          uri: lb://USER-SERVICE # forwarded uri (유레카 서버에 등록된 앱 이름)
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/** # 사용자가 요청한 주소
+            - Path=/user-service/**
           filters:
-            - name: LogFilter
-              args:
-                baseMessage: Welcome to Jiwon's Jimart. This is test base message.
-                preLogger: true
-                postLogger: true
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+#        - id: user-service
+#          uri: lb://USER-SERVICE # forwarded uri (유레카 서버에 등록된 앱 이름)
+#          predicates:
+#            - Path=/user-service/** # 사용자가 요청한 주소
+#          filters:
+#            - name: LogFilter
+#              args:
+#                baseMessage: Welcome to Jiwon's Jimart. This is test base message.
+#                preLogger: true
+#                postLogger: true
         # 상품 모듈
         - id: product-service
           uri: lb://PRODUCT-SERVICE
