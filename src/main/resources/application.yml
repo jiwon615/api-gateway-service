@@ -20,7 +20,7 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-        # 사용자 모듈 (login과 회원가입은 AuthorizationHeaderFilter 없음)
+        # User Microservice (login)
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -29,6 +29,8 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        # User Microservice (회원가입)
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -37,7 +39,18 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        # 사용자 모듈
+
+        # User Microservice (spring actuator)
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=POST,GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        # User Microservice
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -56,15 +69,23 @@ spring:
 #                baseMessage: Welcome to Jiwon's Jimart. This is test base message.
 #                preLogger: true
 #                postLogger: true
-        # 상품 모듈
+        # Product Microservice
         - id: product-service
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/**
-        # 주문 모듈
+
+        # Orders Microservice
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
 jwt:
   secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK=
+
+# Spring Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
